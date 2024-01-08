@@ -1,0 +1,466 @@
+static-crud.........................................................................
+
+package com.example.mansi_189;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        database_operations db=new database_operations(this, "project_db",null,1);
+       // db.add_Data();
+       // db.update_Data();
+        db.delete_Data();
+    }
+
+    public void insert_Data(View view) {
+    }
+}
+-------------------------------------------------------------------------------------------------
+
+package com.example.mansi_189;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.Nullable;
+
+public class database_operations extends SQLiteOpenHelper {
+
+    public database_operations(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        String create_query="Create table tbl_project(project_id integer,project_name text)";
+        db.execSQL(create_query);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        SQLiteDatabase db_update=this.getWritableDatabase();
+
+    }
+
+    public void add_Data()
+    {
+        SQLiteDatabase db_add=this.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+        cv.put("project_id",1);
+        cv.put("project_name","MRS");
+        db_add.insert("tbl_project",null,cv);
+        db_add.close();
+    }
+
+    public void update_Data() {
+        SQLiteDatabase db_update=this.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+        cv.put("project_name","Hotel Management");
+        String[] where_arg={"1"};
+        db_update.update("tbl_project",cv,"project_id=?",where_arg);
+        db_update.close();
+    }
+
+    public void delete_Data() {
+        SQLiteDatabase db_delete=this.getWritableDatabase();
+
+        String[] where_arg={"1"};
+        db_delete.delete("tbl_project","project_id=?",where_arg);
+        db_delete.close();
+    }
+}
+
+.........................dynamic-crud....................................................
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/studidlable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Student ID" />
+
+    <EditText
+        android:id="@+id/Sid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Student ID"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/studentnamelable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Student Name" />
+
+    <EditText
+        android:id="@+id/Sname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Student Name" />
+
+    <TextView
+        android:id="@+id/studentnumberlable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Student Number" />
+
+    <EditText
+        android:id="@+id/Snumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Student Number" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="DB"
+        android:text="Submit" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/update"
+        android:onClick="update"
+        android:text="Update"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/delete"
+        android:onClick="delete"
+        android:text="Delete"/>
+</LinearLayout>
+========================================
+package com.example.internal_pratice;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
+public class MainActivity extends AppCompatActivity {
+EditText e1,e2,e3;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        e1=findViewById(R.id.Sid);
+        e2=findViewById(R.id.Sname);
+        e3=findViewById(R.id.Snumber);
+    }
+
+    public void DB(View view) {
+        dboperation obj= new dboperation(this,"intdb",null,1);
+        int sid=Integer.parseInt(e1.getText().toString());
+        obj.add_data(sid,e2.getText().toString(),e3.getText().toString());
+    }
+
+    public void update(View view) {
+        dboperation obj = new dboperation(this,"intdb",null,1);
+        int sid=Integer.parseInt(e1.getText().toString());
+        obj.update_data(sid,e2.getText().toString(),e3.getText().toString());
+    }
+
+    public void delete(View view) {
+        dboperation obj = new dboperation(this,"intdb",null,1);
+        int sid=Integer.parseInt(e1.getText().toString());
+        obj.delete_data(sid);
+    }
+}
+=================================================
+package com.example.internal_pratice;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.Nullable;
+
+public class dboperation extends SQLiteOpenHelper {
+    public dboperation(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        String create_query = "Create table student(Sid integer,Studentname text,Studentphoneno text)";
+        sqLiteDatabase.execSQL(create_query);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+    }
+
+    public void add_data(int sid, String toString, String toString1) {
+       SQLiteDatabase obj= this.getWritableDatabase();
+        ContentValues cv= new ContentValues();
+        cv.put("Sid", sid);
+        cv.put("Studentname",toString);
+        cv.put("Studentphoneno",toString1);
+        obj.insert("student",null,cv);
+
+    }
+
+
+    public void update_data(int sid, String toString, String toString1) {
+    SQLiteDatabase obj=this.getWritableDatabase();
+    ContentValues cv= new ContentValues();
+    cv.put("Studentname",toString);
+    cv.put("Studentphoneno",toString1);
+    String[] where_arg={sid+""};
+    obj.update("student",cv,"Sid=?",where_arg);
+    }
+
+    public void delete_data(int sid) {
+        SQLiteDatabase obj =this.getWritableDatabase();
+        String[] where_arg={sid+""};
+        obj.delete("student","Sid=?",where_arg);
+    }
+}
+
+
+...............................intent.................................................
+
+package com.example.crudsql;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+public class internaltwo extends AppCompatActivity {
+    EditText t1;
+
+    RadioGroup rg;
+    RadioButton Radio1;
+    CheckBox ch1,ch2,ch3;
+    Spinner spn;
+
+   ArrayList<String> mylist =new ArrayList<>();
+    @SuppressLint("MissingInflatedId")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_internaltwo);
+        t1=findViewById(R.id.stud_register);
+
+        rg=findViewById(R.id.rggroup);
+        ch1=findViewById(R.id.check1);
+        ch2=findViewById(R.id.check2);
+        ch3=findViewById(R.id.check3);
+        spn=findViewById(R.id.spn_obj);
+        mylist.add("it");
+        mylist.add("bio");
+
+        ArrayAdapter<String> adp=new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,mylist);
+        spn.setAdapter(adp);
+
+
+    }
+
+    public void register(View view) {
+        int radio=rg.getCheckedRadioButtonId();
+        Radio1=findViewById(R.id.rg1);
+
+        String checked="";
+        if(ch1.isChecked())
+        {
+            checked +=ch1.getText().toString();
+        }
+        if(ch2.isChecked())
+        {
+            checked +=ch2.getText().toString();
+        }
+        if(ch3.isChecked())
+        {
+            checked +=ch3.getText().toString();
+        }
+
+
+
+
+
+
+
+        String t11 = t1.getText().toString();
+        String rgg =  Radio1.getText().toString();
+
+        Intent i = new Intent(this, registervalue.class);
+        i.putExtra("name",t11);
+        i.putExtra("radio",rgg);
+        i.putExtra("cheked",checked);
+        i.putExtra("spinner",String.valueOf(spn.getSelectedItem()));
+
+        startActivity(i);
+//
+
+
+    }
+}
+
+........register.javA
+
+package com.example.crudsql;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class registervalue extends AppCompatActivity {
+    TextView name,radio,checkbox,spin;
+
+    @SuppressLint({"MissingInflatedId", "WrongViewCast"})
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_registervalue);
+        name=findViewById(R.id.textt);
+        radio=findViewById(R.id.textr);
+        checkbox=findViewById(R.id.textc);
+        spin=findViewById(R.id.spn_obj);
+
+        String t11 = getIntent().getStringExtra("name");
+        name.setText(t11);
+        String rgg = getIntent().getStringExtra("radio");
+        radio.setText(rgg);
+        String check = getIntent().getStringExtra("cheked");
+        checkbox.setText(check);
+        String spinner1 = getIntent().getStringExtra("spinner");
+        checkbox.setText(spinner1);
+
+    }
+}
+
+
+,
+
+...............................shared...............................
+
+package com.example.crudsql;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
+public class logout extends AppCompatActivity {
+    EditText e1,e2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_logout);
+        e1 = findViewById(R.id.plain1);
+        e2 = findViewById(R.id.plain2);
+
+    }
+
+    public void log_btn(View view) {
+        String u = e1.getText().toString();
+        String p = e2.getText().toString();
+
+        Context c = logout.this;
+        SharedPreferences sobj =c.getSharedPreferences("myfile",Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor eobj = sobj.edit();
+        eobj.putString("user",u);
+        eobj.putString("pass",p);
+        eobj.commit();
+
+        Intent i = new Intent(this,shared.class);
+        startActivity(i);
+    }
+}
+
+..................................listview.....................................
+
+
+package com.example.crudsql;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class listview extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    EditText e1;
+    ListView lv;
+    ArrayList<String> mylist = new ArrayList<>();
+    ArrayAdapter<String> adp;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_listview);
+        lv = findViewById(R.id.lv1);
+        lv.setOnItemClickListener(this);
+        e1 = findViewById(R.id.edit1);
+    }
+
+    public void add(View view) {
+        mylist.add(e1.getText().toString());
+        ArrayAdapter<String> adp = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mylist);
+        lv.setAdapter(adp);
+    }
+
+    public void remove(View view) {
+        String add_remove = e1.getText().toString();
+        for (int i = 0; i < mylist.size(); i++) {
+            if (mylist.get(i).toString().equals(add_remove)) {
+                mylist.remove(i);
+            }
+        }
+        ArrayAdapter<String> adp = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mylist);
+        lv.setAdapter(adp);
+        e1.setText(" ");
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Toast.makeText(this, ""+mylist.get(i).toString(), Toast.LENGTH_SHORT).show();
+    }
+}

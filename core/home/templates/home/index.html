@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block start %}
+<a href="/about/">about</a>
+<a href="/contact/">contact</a>
+     <h2>This is Template Return By Django Server</h2>
+
+<!--     {{people}}-->
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">S. No</th>
+            <th scope="col">Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">Can vote</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for peo in people %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ peo.name }}</td>
+            <td>{{ peo.age }}</td>
+            <td>
+                {% if peo.age >= 18 %}
+                👍
+                {% else %}
+                👎
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!--     slice-->
+<p>{{text|truncatechars:120}}</p>
+
+<p>
+    {% if "cucumber" in vegetables %}
+     Yes Available
+    {% elif "Tomato" in vegetables %}
+     yes available
+    {% elif "Potato" in vegetables %}
+     yes available
+    {% else %}
+    Not Available
+    {% endif %}
+
+</p>
+
+
+{% endblock %}
